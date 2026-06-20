@@ -485,10 +485,13 @@ async function gen(mod) {
     fd.append('cedula', ced);
     fd.append('cobro', cob);
     if (F.firma) fd.append('firma', F.firma, 'firma.png');
-
-    if (mod === 'informe') {
+     if (mod === 'informe') {
       fd.append('excel', F.xl);
-      if (F.ev) { const csv = F.ev.find(f => f.name.toLowerCase().endsWith('.csv')); if (csv) fd.append('csv', csv); }
+      if (F.ev) {
+        const csv = F.ev.find(f => f.name.toLowerCase().endsWith('.csv'));
+        if (csv) fd.append('csv', csv);
+        const sueltos = F.ev.filter(f => !f.name.toLowerCase().endsWith('.csv'));
+        sueltos.slice(0, 10).forEach((f, i) => fd.append('evidencia_' + i, f));
     } else if (mod === 'cuenta') {
       fd.append('pdf', F.dan);
       fd.append('version', document.getElementById('decl-v').value);
