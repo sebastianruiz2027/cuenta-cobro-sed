@@ -9,15 +9,12 @@ FLUJO:
 
 COORDENADAS (medidas del PDF real 595x841pt):
   Página 1 — Cuenta de cobro:
-    Firma sobre línea y=693.6 → espacio libre y=529→693 (~164pt)
-    Campo firma: x=64→375, firma en x=66, y_base=694 (sobre la línea)
+    Espacio libre entre "Atentamente," (y=485.8) y nombre (y=513.8) = 28pt
+    Firma va EN ESE ESPACIO, no encima del nombre
 
-  Página 2 — Declaración CON valores:
+  Página 2 — Declaración CON valores / CON ceros:
     Firma sobre guiones y=685.8
     Campo firma: x=55→250, firma en x=57, y_base=686
-
-  Página 3 — Declaración CON ceros:
-    Mismas coordenadas que página 2
 
 USO:
   python cuenta_cobro.py \
@@ -34,19 +31,19 @@ from reportlab.pdfgen import canvas as rl_canvas
 
 # ── COORDENADAS DE FIRMA ──
 # Página 1 — Cuenta de cobro
-# Espacio libre: entre y=576 (celular) y y=622 (registro) = 46pt
-# Firma centrada en ese espacio
-CUENTA_FIRMA_X    = 66
-CUENTA_FIRMA_Y_TOP = 580   # justo debajo del celular (y=576)
-CUENTA_FIRMA_H    = 38     # cabe en los 46pt disponibles
-CUENTA_FIRMA_W    = 180    # ancho proporcional
+# Espacio libre real: entre "Atentamente," (y=485.8) y nombre (y=513.8) = 28pt
+# La firma va EN ESE ESPACIO (no encima del nombre)
+CUENTA_FIRMA_X     = 66
+CUENTA_FIRMA_Y_TOP = 488   # justo debajo de "Atentamente,"
+CUENTA_FIRMA_H     = 24    # cabe en los 28pt disponibles antes del nombre
+CUENTA_FIRMA_W     = 140   # ancho proporcional
 
 # Páginas 2 y 3 — Declaraciones
-# Texto termina en y=650, guiones en y=685 → espacio = 35pt
+# Guiones en y=685.8, firma va encima
 DECL_FIRMA_X     = 57
-DECL_FIRMA_Y_TOP = 653    # justo debajo del último texto
-DECL_FIRMA_H     = 28     # cabe en los 35pt disponibles
-DECL_FIRMA_W     = 165    # ancho proporcional
+DECL_FIRMA_Y_TOP = 653    # desde arriba (suficiente espacio encima de los guiones)
+DECL_FIRMA_H     = 28
+DECL_FIRMA_W     = 165
 
 
 def estampar_firma_en_pagina(page, firma_path: str, x: float, y_top: float,
@@ -59,7 +56,6 @@ def estampar_firma_en_pagina(page, firma_path: str, x: float, y_top: float,
     page_h = float(page.mediabox.height)
     page_w = float(page.mediabox.width)
 
-    # Convertir y_top (desde arriba) a y_rl (desde abajo)
     y_rl = page_h - y_top - h
 
     buf = io.BytesIO()
@@ -77,6 +73,26 @@ def estampar_firma_en_pagina(page, firma_path: str, x: float, y_top: float,
     overlay = PR(buf).pages[0]
     page.merge_page(overlay)
     return page
+
+
+def limpiar_fondo_firma(firma_path: str, workdir: str) -> str:
+    """
+    Elimina el fondo blanco/gris de la imagen de firma para que quede
+    transparente al estamparla sobre el PDF.
+    """
+    from PIL import Image
+    import numpy as np
+    import os
+
+    img = Image.open(firma_path).convert('RGBA')
+    arr = np.array(img)
+    r, g, b, a = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2], arr[:, :, 3]
+    fondo = (r > 180) & (g > 180) & (b > 180)
+    arr[:, :, 3] = np.where(fondo, 0, 255)
+
+    out_path = os.path.join(workdir, 'firma_limpia.png')
+    Image.fromarray(arr).save(out_path)
+    return out_path
 
 
 def procesar_cuenta_cobro(pdf_src: str, firma_path: str,
@@ -97,13 +113,17 @@ def procesar_cuenta_cobro(pdf_src: str, firma_path: str,
     if version not in ('valores', 'ceros'):
         raise ValueError("version debe ser 'valores' o 'ceros'")
 
+    import tempfile
+    workdir = tempfile.mkdtemp()
+    firma_limpia = limpiar_fondo_firma(firma_path, workdir)
+
     reader = PdfReader(pdf_src)
     writer = PdfWriter()
 
     # Página 0 = cuenta de cobro → firmar
     pag_cuenta = reader.pages[0]
     pag_cuenta = estampar_firma_en_pagina(
-        pag_cuenta, firma_path,
+        pag_cuenta, firma_limpia,
         CUENTA_FIRMA_X, CUENTA_FIRMA_Y_TOP,
         CUENTA_FIRMA_W, CUENTA_FIRMA_H
     )
@@ -114,7 +134,7 @@ def procesar_cuenta_cobro(pdf_src: str, firma_path: str,
     idx_decl = 1 if version == 'valores' else 2
     pag_decl = reader.pages[idx_decl]
     pag_decl = estampar_firma_en_pagina(
-        pag_decl, firma_path,
+        pag_decl, firma_limpia,
         DECL_FIRMA_X, DECL_FIRMA_Y_TOP,
         DECL_FIRMA_W, DECL_FIRMA_H
     )
