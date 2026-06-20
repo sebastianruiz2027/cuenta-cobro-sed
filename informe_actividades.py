@@ -133,13 +133,11 @@ def extraer_keywords(actividad: str, min_len: int = 5) -> list[str]:
         'principalmente', 'orientadas', 'orientados', 'fortalecer',
     }
     texto = actividad.lower()
-    # Extraer palabras limpias
     palabras = re.findall(r'[a-záéíóúüñ]+', texto)
     keywords = []
     for p in palabras:
         if len(p) >= min_len and p not in stop_words:
             keywords.append(p)
-    # También incluir frases de 2-3 palabras del texto original
     palabras_orig = actividad.lower().split()
     for i in range(len(palabras_orig) - 1):
         bigrama = palabras_orig[i] + ' ' + palabras_orig[i+1]
@@ -161,7 +159,6 @@ def leer_evidencias(csv_path: str) -> list[dict]:
             remitente = row.get('De: (nombre)', '').strip().lower()
             cuerpo = row.get('Cuerpo', '').strip()[:300]
 
-            # Filtrar spam y notificaciones
             if any(s in remitente for s in SKIP_REMITENTES):
                 continue
             if any(s in asunto.lower() for s in SKIP_ASUNTOS):
@@ -179,9 +176,7 @@ def clasificar_evidencias(evidencias: list[dict],
     Clasifica cada evidencia en la actividad que mejor coincide.
     Funciona para cualquier número de actividades.
     """
-    # Generar keywords por actividad desde su texto real
     keywords_por_act = [extraer_keywords(act) for act in actividades]
-
     clasificados = [[] for _ in range(len(actividades))]
 
     for ev in evidencias:
@@ -210,6 +205,7 @@ def redactar_metas(clasificados: list[list[str]],
     """
     import urllib.request
     import json as _json
+    import os as _os
 
     def limpiar(asunto: str) -> str:
         return re.sub(
@@ -230,7 +226,6 @@ def redactar_metas(clasificados: list[list[str]],
 
     n_acts = len(actividades)
 
-    # Construir prompt con temas reales por actividad
     partes = []
     for i, (act, cls) in enumerate(zip(actividades, clasificados)):
         temas = top_temas(cls, 8)
@@ -253,35 +248,46 @@ def redactar_metas(clasificados: list[list[str]],
         + f"Array de exactamente {n_acts} elementos."
     )
 
-    # Intentar con API de Anthropic
-    try:
-        data = _json.dumps({
-            'model': 'claude-sonnet-4-20250514',
-            'max_tokens': 150 * n_acts,
-            'messages': [{'role': 'user', 'content': prompt}]
-        }).encode('utf-8')
-        import os as _os
-        api_key = _os.environ.get('ANTHROPIC_API_KEY', '')
-        req = urllib.request.Request(
-            'https://api.anthropic.com/v1/messages',
-            data=data,
-            headers={
-                'Content-Type': 'application/json',
-                'x-api-key': api_key,
-                'anthropic-version': '2023-06-01'
-            },
-            method='POST'
-        )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            result = _json.loads(resp.read())
-        txt = (result['content'][0]['text']
-               .strip().replace('```json', '').replace('```', '').strip())
-        metas = _json.loads(txt)['metas']
-        if len(metas) == n_acts:
-            print(f'  ✓ Metas redactadas por IA para {n_acts} actividades')
-            return metas
-    except Exception as e:
-        print(f'  ⚠ API no disponible ({e}) — usando redacción local')
+    # Intentar con API de Anthropic — lista de modelos a probar en orden
+    modelos = [
+        'claude-sonnet-4-5-20250929',
+        'claude-sonnet-4-6',
+        'claude-3-5-sonnet-20241022',
+    ]
+    api_key = _os.environ.get('ANTHROPIC_API_KEY', '')
+
+    if not api_key:
+        print('  ⚠ ANTHROPIC_API_KEY no configurada — usando redacción local')
+    else:
+        for modelo in modelos:
+            try:
+                data = _json.dumps({
+                    'model': modelo,
+                    'max_tokens': 150 * n_acts,
+                    'messages': [{'role': 'user', 'content': prompt}]
+                }).encode('utf-8')
+                req = urllib.request.Request(
+                    'https://api.anthropic.com/v1/messages',
+                    data=data,
+                    headers={
+                        'Content-Type': 'application/json',
+                        'x-api-key': api_key,
+                        'anthropic-version': '2023-06-01'
+                    },
+                    method='POST'
+                )
+                with urllib.request.urlopen(req, timeout=45) as resp:
+                    result = _json.loads(resp.read())
+                txt = (result['content'][0]['text']
+                       .strip().replace('```json', '').replace('```', '').strip())
+                metas = _json.loads(txt)['metas']
+                if len(metas) == n_acts:
+                    print(f'  ✓ Metas redactadas por IA ({modelo}) para {n_acts} actividades')
+                    return metas
+            except Exception as e:
+                print(f'  ⚠ Modelo {modelo} falló: {e}')
+                continue
+        print('  ⚠ Ningún modelo de la API respondió — usando redacción local')
 
     # Fallback: redacción local sin API
     metas = []
@@ -294,7 +300,6 @@ def redactar_metas(clasificados: list[list[str]],
             bullets = f'• Se apoyaron las actividades establecidas en el contrato.'
         metas.append(bullets)
     return metas
-
 
 
 # ═════════════════════════════════════════════════════════════════════
@@ -316,11 +321,8 @@ def llenar_excel(excel_src: str, cedula: int, cobro: int,
     ws['G14'] = cedula
     ws['E12'] = cobro
 
-    # Metas: E16=Act1, E17=Act2, ..., E(15+n)=ActN
-    # Funciona para cualquier número de actividades y cualquier cantidad de bullets
-    # Altura de fila se ajusta automáticamente al contenido
-    COL_CHARS = 88  # caracteres disponibles por línea en la celda E+F merged
-    FONT_SIZE  = 10  # fuente legible fija — la celda se expande si necesita
+    COL_CHARS = 88
+    FONT_SIZE = 10
 
     for i, meta in enumerate(metas):
         fila = 16 + i
@@ -329,10 +331,7 @@ def llenar_excel(excel_src: str, cedula: int, cobro: int,
         cell.alignment = Alignment(wrap_text=True, vertical='top', horizontal='left')
         cell.font = Font(name='Calibri', size=FONT_SIZE)
 
-        # Calcular líneas reales que ocupa el texto con wrap
         lineas_total = sum(max(1, -(-len(b) // COL_CHARS)) for b in meta.splitlines())
-
-        # Altura necesaria: 15pt por línea + 10pt padding
         altura = max(144, lineas_total * 15 + 10)
         ws.row_dimensions[fila].height = altura
 
@@ -352,7 +351,7 @@ def excel_a_pdf(excel_path: str, output_dir: str) -> str:
     result = subprocess.run(
         ['libreoffice', '--headless', '--convert-to', 'pdf',
          excel_path, '--outdir', output_dir],
-        capture_output=True, text=True
+        capture_output=True, text=True, timeout=100
     )
     if result.returncode != 0:
         raise RuntimeError(f'LibreOffice falló: {result.stderr}')
@@ -371,19 +370,17 @@ def estampar_firma(pdf_src: str, firma_img: str,
     Estampa la imagen de firma (PNG/JPG dibujada o escaneada) en el
     campo 'Firma del Contratista' de la última página del informe.
 
-    Coordenadas del campo en formato GJ-FR-005 (página 3, 595x841pt):
-      'Firma del Contratista' label está en y≈517 desde arriba
-      La firma se ubica justo encima: y_rl = page_h - 517 (coords ReportLab)
+    Coordenadas medidas del PDF real (595x841pt):
+      Línea de firma en y=515.6 desde arriba
+      Espacio libre: y=479.9 → y=515.6 (35.7pt)
     """
     reader = PdfReader(pdf_src)
     writer = PdfWriter()
     total = len(reader.pages)
 
-    # Copiar todas las páginas menos la última
     for i in range(total - 1):
         writer.add_page(reader.pages[i])
 
-    # Última página: merge con overlay de firma
     last = reader.pages[-1]
     page_w = float(last.mediabox.width)
     page_h = float(last.mediabox.height)
@@ -394,12 +391,9 @@ def estampar_firma(pdf_src: str, firma_img: str,
     firma_path = Path(firma_img) if firma_img else None
 
     if firma_path and firma_path.exists():
-        # Coordenadas exactas medidas del PDF real (595x841pt):
-        # Línea firma en y=515.6 desde arriba
-        # Espacio libre: y=479.9 → y=515.6 = 35.7pt
         firma_w, firma_h = 165, 32
         firma_x = 42
-        firma_y = page_h - 515.6  # base sobre la línea de firma
+        firma_y = page_h - 515.6
         c.drawImage(
             str(firma_path), firma_x, firma_y,
             width=firma_w, height=firma_h,
@@ -407,7 +401,6 @@ def estampar_firma(pdf_src: str, firma_img: str,
         )
         print(f'  ✓ Firma imagen estampada desde: {firma_path}')
     else:
-        # Fallback: texto cursivo si no hay imagen de firma
         c.setFont('Helvetica-Oblique', 11)
         c.setFillColorRGB(0.05, 0.05, 0.4)
         c.drawString(60, page_h - 505, nombre)
@@ -443,18 +436,6 @@ def generar_informe(
     """
     Genera el 'Informe de actividades terminado y firmado'.
     Aplica para cualquier contratista del formato 106407.
-
-    Args:
-        excel_src:       Ruta al Excel del formato (con hoja CONSOLIDADO)
-        csv_evidencias:  Ruta al CSV del calendario o correos del mes
-        cedula:          Cédula del contratista
-        cobro:           Número de informe/cobro
-        firma_img:       Ruta a PNG/JPG de la firma dibujada (opcional)
-        output_pdf:      Ruta del PDF de salida (opcional)
-        workdir:         Directorio temporal para archivos intermedios
-
-    Returns:
-        Ruta del PDF firmado listo para el supervisor
     """
     mes_label = f'Informe{cobro}'
     if not output_pdf:
@@ -464,7 +445,6 @@ def generar_informe(
     print(f'  INFORME DE ACTIVIDADES — Cédula {cedula} · Cobro #{cobro}')
     print(f'{"═"*60}')
 
-    # 0. Leer datos del contratista desde el CONSOLIDADO
     print('\n[1/5] Leyendo datos del contratista desde CONSOLIDADO...')
     datos = leer_contratista(excel_src, cedula)
     print(f'  Contratista: {datos["nombre"]}')
@@ -473,27 +453,22 @@ def generar_informe(
     for i, a in enumerate(datos['actividades']):
         print(f'    Act {i+1}: {a[:70]}...' if len(a) > 70 else f'    Act {i+1}: {a}')
 
-    # 1. Leer y clasificar evidencias
     print(f'\n[2/5] Leyendo evidencias desde {csv_evidencias}...')
-    evidencias = leer_evidencias(csv_evidencias)
+    evidencias = leer_evidencias(csv_evidencias) if csv_evidencias else []
     print(f'  {len(evidencias)} evidencias relevantes encontradas')
     clasificados = clasificar_evidencias(evidencias, datos['actividades'])
     for i, evs in enumerate(clasificados):
         print(f'  Act {i+1}: {len(evs)} evidencias')
 
-    # 2. Redactar metas
     print('\n[3/5] Redactando metas por actividad...')
     metas = redactar_metas(clasificados, datos['actividades'])
 
-    # 3. Llenar Excel
     print('\n[4/5] Llenando Excel...')
     excel_tmp = str(Path(workdir) / f'{cedula}_Informe{cobro}_tmp.xlsx')
     llenar_excel(excel_src, cedula, cobro, metas, excel_tmp)
 
-    # 4. Convertir a PDF
     pdf_tmp = excel_a_pdf(excel_tmp, workdir)
 
-    # 5. Estampar firma
     print('\n[5/5] Estampando firma...')
     estampar_firma(pdf_tmp, firma_img, output_pdf, cedula, datos['nombre'])
 
