@@ -34,19 +34,19 @@ from reportlab.pdfgen import canvas as rl_canvas
 
 # ── COORDENADAS DE FIRMA ──
 # Página 1 — Cuenta de cobro
-# Espacio libre: entre y=529 (nombre) y y=693 (línea) = ~164pt
-# Firma va en el centro de ese espacio
+# Espacio libre: entre y=576 (celular) y y=622 (registro) = 46pt
+# Firma centrada en ese espacio
 CUENTA_FIRMA_X    = 66
-CUENTA_FIRMA_Y_TOP = 540   # desde arriba (debajo del nombre)
-CUENTA_FIRMA_H    = 80     # alto imagen
-CUENTA_FIRMA_W    = 200    # ancho imagen
+CUENTA_FIRMA_Y_TOP = 580   # justo debajo del celular (y=576)
+CUENTA_FIRMA_H    = 38     # cabe en los 46pt disponibles
+CUENTA_FIRMA_W    = 180    # ancho proporcional
 
 # Páginas 2 y 3 — Declaraciones
-# Guiones en y=685.8, firma va encima
+# Texto termina en y=650, guiones en y=685 → espacio = 35pt
 DECL_FIRMA_X     = 57
-DECL_FIRMA_Y_TOP = 640    # desde arriba (suficiente espacio encima de los guiones)
-DECL_FIRMA_H     = 48
-DECL_FIRMA_W     = 180
+DECL_FIRMA_Y_TOP = 653    # justo debajo del último texto
+DECL_FIRMA_H     = 28     # cabe en los 35pt disponibles
+DECL_FIRMA_W     = 165    # ancho proporcional
 
 
 def estampar_firma_en_pagina(page, firma_path: str, x: float, y_top: float,
