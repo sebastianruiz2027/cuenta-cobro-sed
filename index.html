@@ -580,17 +580,10 @@
     document.getElementById(c.pg).style.display = 'block';
     document.getElementById(c.res).innerHTML = '';
 
-    var pct = 10, li = 0;
     var fillEl = document.getElementById(c.fill);
     var txtEl = document.getElementById(c.txt);
+    fillEl.style.width = '15%';
     txtEl.textContent = c.labels[0];
-    var iv = setInterval(function () {
-      pct = Math.min(pct + 12, 88);
-      fillEl.style.width = pct + '%';
-      if (li < c.labels.length - 1 && pct > (li + 1) * (80 / c.labels.length)) {
-        li++; txtEl.textContent = c.labels[li];
-      }
-    }, 1200);
 
     var fd = new FormData();
     fd.append('cedula', ced);
@@ -630,38 +623,87 @@
       fd.append('ss', F.emp_ss);
     }
 
+    function onSuccess(blob) {
+      fillEl.style.width = '100%';
+      txtEl.textContent = '✓ Listo';
+      var url = URL.createObjectURL(blob);
+      document.getElementById(c.res).innerHTML =
+        '<div class="result"><span>📄</span><span class="result-name">' + c.name +
+        '</span><a href="' + url + '" download="' + c.name + '" class="result-dl">⬇ Descargar</a></div>';
+      if (c.mod) document.getElementById(c.mod).classList.add('done');
+      if (c.slot) {
+        F['emp_' + c.slot] = new File([blob], c.name, { type: 'application/pdf' });
+        markSlot('es-' + c.slot, c.name, 'auto');
+      }
+      if (btn) btn.innerHTML = '✓ Listo';
+      toast('¡Listo! ' + c.name, 'ok');
+    }
+
+    function onError(msg) {
+      fillEl.style.width = '0%';
+      txtEl.textContent = 'Error — intenta de nuevo';
+      if (btn) { btn.disabled = false; btn.innerHTML = mod === 'empaquetar' ? '📦 Reintentar' : '⚡ Reintentar'; }
+      toast('Error: ' + msg, 'err');
+    }
+
+    // ── MÓDULO ASÍNCRONO (informe) — evita timeouts sin importar evidencias ──
+    if (mod === 'informe') {
+      var elapsed = 0;
+      var warnedSlow = false;
+      fetch(API + c.ep, { method: 'POST', body: fd })
+        .then(function (resp) {
+          if (!resp.ok) return resp.json().then(function (e) { throw new Error(e.error || 'Error del servidor'); });
+          return resp.json();
+        })
+        .then(function (data) {
+          var taskId = data.task_id;
+          var poll = setInterval(function () {
+            elapsed += 3;
+            fillEl.style.width = Math.min(15 + elapsed * 2, 90) + '%';
+            if (elapsed > 60 && !warnedSlow) {
+              warnedSlow = true;
+              toast('Esto está tomando más de lo normal, sigue procesando...', '');
+            }
+            fetch(API + '/api/status/' + taskId)
+              .then(function (r) { return r.json(); })
+              .then(function (st) {
+                if (st.progress) txtEl.textContent = st.progress;
+                if (st.status === 'done') {
+                  clearInterval(poll);
+                  fetch(API + '/api/download/' + taskId)
+                    .then(function (r) { return r.blob(); })
+                    .then(onSuccess)
+                    .catch(function (e) { onError(e.message); });
+                } else if (st.status === 'error') {
+                  clearInterval(poll);
+                  onError(st.error || 'Error desconocido');
+                }
+              })
+              .catch(function () { /* sigue intentando */ });
+          }, 3000);
+        })
+        .catch(function (e) { onError(e.message); console.error(e); });
+      return;
+    }
+
+    // ── MÓDULOS SÍNCRONOS (cuenta, ss, empaquetar) — siempre rápidos ──
+    var pct = 10, li = 0;
+    var iv = setInterval(function () {
+      pct = Math.min(pct + 12, 88);
+      fillEl.style.width = pct + '%';
+      if (li < c.labels.length - 1 && pct > (li + 1) * (80 / c.labels.length)) {
+        li++; txtEl.textContent = c.labels[li];
+      }
+    }, 1200);
+
     fetch(API + c.ep, { method: 'POST', body: fd })
       .then(function (resp) {
         clearInterval(iv);
-        if (!resp.ok) {
-          return resp.json().then(function (e) { throw new Error(e.error || 'Error del servidor'); });
-        }
-        fillEl.style.width = '100%';
-        txtEl.textContent = '✓ Listo';
+        if (!resp.ok) return resp.json().then(function (e) { throw new Error(e.error || 'Error del servidor'); });
         return resp.blob();
       })
-      .then(function (blob) {
-        var url = URL.createObjectURL(blob);
-        document.getElementById(c.res).innerHTML =
-          '<div class="result"><span>📄</span><span class="result-name">' + c.name +
-          '</span><a href="' + url + '" download="' + c.name + '" class="result-dl">⬇ Descargar</a></div>';
-
-        if (c.mod) document.getElementById(c.mod).classList.add('done');
-        if (c.slot) {
-          F['emp_' + c.slot] = new File([blob], c.name, { type: 'application/pdf' });
-          markSlot('es-' + c.slot, c.name, 'auto');
-        }
-        if (btn) btn.innerHTML = '✓ Listo';
-        toast('¡Listo! ' + c.name, 'ok');
-      })
-      .catch(function (e) {
-        clearInterval(iv);
-        fillEl.style.width = '0%';
-        txtEl.textContent = 'Error — intenta de nuevo';
-        if (btn) { btn.disabled = false; btn.innerHTML = mod === 'empaquetar' ? '📦 Reintentar' : '⚡ Reintentar'; }
-        toast('Error: ' + e.message, 'err');
-        console.error(e);
-      });
+      .then(onSuccess)
+      .catch(function (e) { clearInterval(iv); onError(e.message); console.error(e); });
   }
 
   function toast(msg, type) {
