@@ -31,7 +31,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  /* HEADER */
   .hdr { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 28px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
   .logo { display: flex; align-items: center; gap: 10px; }
   .logo-dot { width: 28px; height: 28px; border-radius: var(--rsm); background: var(--text); display: flex; align-items: center; justify-content: center; color: var(--surface); font-size: 13px; font-weight: 500; }
@@ -39,10 +38,8 @@
   .logo-sub { font-size: 11px; color: var(--t3); }
   .hdr-pill { font-size: 11px; font-family: var(--mono); color: var(--t2); background: var(--s2); padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); }
 
-  /* PAGE */
   .page { max-width: 740px; margin: 0 auto; padding: 28px 20px; }
 
-  /* CARDS */
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 12px; }
   .card-hdr { background: var(--s2); border-bottom: 1px solid var(--border); padding: 13px 18px; display: flex; align-items: center; gap: 11px; }
   .fase-num { width: 26px; height: 26px; border-radius: var(--rsm); background: var(--text); color: var(--surface); font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -52,23 +49,19 @@
   .card-sub { font-size: 11px; color: var(--t2); margin-top: 1px; }
   .card-body { padding: 18px; }
 
-  /* GRID */
   .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 
-  /* MÓDULO */
   .mod { background: var(--bg); border: 1px solid var(--border); border-radius: var(--rsm); padding: 13px; }
   .mod.done { border-color: var(--ok-border); background: var(--ok-bg); }
   .mod-title { font-size: 11px; font-weight: 500; margin-bottom: 10px; }
 
-  /* CAMPOS */
   .fld { display: flex; flex-direction: column; gap: 3px; margin-bottom: 9px; }
   .fld label { font-size: 11px; color: var(--t2); font-weight: 500; }
   .fld input, .fld select { font-family: var(--font); font-size: 12px; padding: 8px 10px; border-radius: var(--rsm); border: 1px solid var(--border); background: var(--surface); color: var(--text); outline: none; width: 100%; transition: border .15s; }
   .fld input:focus, .fld select:focus { border-color: var(--text); }
   .row { display: flex; gap: 10px; }
 
-  /* DROP ZONE */
   .dz { border: 1.5px dashed var(--border2); border-radius: var(--rsm); padding: 12px; text-align: center; cursor: pointer; transition: all .2s; background: var(--surface); margin-bottom: 8px; display: block; }
   .dz:hover, .dz.loaded { border-color: var(--text); background: var(--s2); }
   .dz.loaded { border-style: solid; }
@@ -79,7 +72,6 @@
   .ev-chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 6px; }
   .ev-chip { font-size: 9px; padding: 2px 8px; border-radius: 999px; background: var(--s2); color: var(--t2); border: 1px solid var(--border); }
 
-  /* FIRMA */
   .ftabs { display: flex; border: 1px solid var(--border); border-radius: var(--rsm); overflow: hidden; margin-bottom: 8px; }
   .ftab { flex: 1; padding: 6px; font-size: 11px; font-weight: 500; border: none; cursor: pointer; background: var(--surface); color: var(--t2); font-family: var(--font); transition: all .15s; }
   .ftab.on { background: var(--text); color: var(--surface); }
@@ -87,18 +79,15 @@
   .fw-hint { position: absolute; top: 8px; left: 10px; font-size: 10px; color: var(--t3); pointer-events: none; }
   .firma-ok { padding: 6px 10px; background: var(--ok-bg); border: 1px solid var(--ok-border); border-radius: var(--rsm); font-size: 11px; color: var(--ok-text); margin-top: 6px; display: none; }
 
-  /* BOTÓN */
   .btn { width: 100%; padding: 9px; font-size: 12px; font-weight: 500; border: none; border-radius: var(--rsm); background: var(--text); color: var(--surface); cursor: pointer; font-family: var(--font); display: flex; align-items: center; justify-content: center; gap: 6px; transition: opacity .15s; }
   .btn:hover { opacity: .85; }
   .btn:disabled { opacity: .3; cursor: not-allowed; }
   .btn-info { background: var(--info-text); }
 
-  /* RESULTADO */
   .result { display: flex; align-items: center; gap: 8px; background: var(--ok-bg); border: 1px solid var(--ok-border); border-radius: var(--rsm); padding: 8px 11px; margin-top: 8px; }
   .result-name { font-size: 11px; font-weight: 500; color: var(--ok-text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--mono); }
   .result-dl { font-size: 11px; font-weight: 500; color: var(--ok-text); text-decoration: none; padding: 3px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--ok-border); white-space: nowrap; }
 
-  /* SLOTS FASE 3 */
   .slot { border: 1.5px dashed var(--border2); border-radius: var(--rsm); padding: 13px; text-align: center; cursor: pointer; background: var(--surface); transition: all .2s; }
   .slot:hover { border-color: var(--text); }
   .slot.ok { border-color: var(--ok-border); background: var(--ok-bg); cursor: default; border-style: solid; }
@@ -114,15 +103,12 @@
   .badge-ok { background: var(--surface); color: var(--ok-text); border: 1px solid var(--ok-border); }
   .badge-warn { background: var(--surface); color: var(--warn-text); border: 1px solid var(--warn-border); }
 
-  /* WAIT BOX */
   .wait { background: var(--warn-bg); border: 1px dashed var(--warn-border); border-radius: var(--rsm); padding: 13px 15px; font-size: 12px; color: var(--warn-text); line-height: 1.8; }
 
-  /* PROGRESS */
   .prog-bar { height: 2px; background: var(--border); border-radius: 999px; overflow: hidden; margin: 8px 0; }
   .prog-fill { height: 100%; background: var(--text); transition: width .4s; border-radius: 999px; }
   .prog-text { font-size: 10px; color: var(--t2); text-align: center; }
 
-  /* TOAST */
   .toast { position: fixed; bottom: 18px; right: 18px; background: var(--text); color: var(--surface); font-size: 12px; padding: 10px 16px; border-radius: var(--rsm); z-index: 999; transform: translateY(60px); opacity: 0; transition: all .3s cubic-bezier(.34,1.56,.64,1); max-width: 280px; line-height: 1.5; }
   .toast.show { transform: translateY(0); opacity: 1; }
   .toast.ok { background: var(--ok-text); }
@@ -130,7 +116,6 @@
 
   @keyframes spin { to { transform: rotate(360deg); } }
   .spin { width: 13px; height: 13px; border: 2px solid rgba(255,255,255,.3); border-top-color: var(--surface); border-radius: 50%; animation: spin .6s linear infinite; flex-shrink: 0; }
-  .divider { height: 1px; background: var(--border); }
 </style>
 </head>
 <body>
@@ -148,15 +133,13 @@
 
 <div class="page">
 
-  <!-- CONFIG GLOBAL -->
   <div class="card" style="margin-bottom:20px;">
     <div class="card-body">
       <div class="row">
         <div style="flex:1;">
           <div class="fld">
             <label>Cédula del contratista</label>
-            <input type="text" id="g-ced" placeholder="Ej: 1128425027"
-              oninput="document.getElementById('hdr-ced').textContent=this.value||'Sin cédula'">
+            <input type="text" id="g-ced" placeholder="Ej: 1128425027">
           </div>
           <div class="fld">
             <label>Número de cobro</label>
@@ -168,8 +151,8 @@
             Firma del contratista — se usa en todos los módulos
           </div>
           <div class="ftabs">
-            <button class="ftab on" id="ft-d" onclick="setFTab('d')">✏️ Dibujar</button>
-            <button class="ftab" id="ft-u" onclick="setFTab('u')">📎 Adjuntar imagen</button>
+            <button class="ftab on" id="ft-d" type="button">✏️ Dibujar</button>
+            <button class="ftab" id="ft-u" type="button">📎 Adjuntar imagen</button>
           </div>
           <div id="fp-d">
             <div class="fw">
@@ -177,13 +160,13 @@
               <canvas id="fc" width="420" height="72" style="display:block;cursor:crosshair;"></canvas>
             </div>
             <div style="display:flex;gap:6px;">
-              <button onclick="clrF()" style="flex:1;padding:6px;font-size:11px;border:1px solid var(--border);border-radius:var(--rsm);background:var(--surface);cursor:pointer;font-family:var(--font);">Limpiar</button>
-              <button onclick="savFD()" style="flex:1;padding:6px;font-size:11px;border:none;border-radius:var(--rsm);background:var(--text);color:var(--surface);cursor:pointer;font-family:var(--font);font-weight:500;">Guardar firma</button>
+              <button id="btn-clear-firma" type="button" style="flex:1;padding:6px;font-size:11px;border:1px solid var(--border);border-radius:var(--rsm);background:var(--surface);cursor:pointer;font-family:var(--font);">Limpiar</button>
+              <button id="btn-save-firma" type="button" style="flex:1;padding:6px;font-size:11px;border:none;border-radius:var(--rsm);background:var(--text);color:var(--surface);cursor:pointer;font-family:var(--font);font-weight:500;">Guardar firma</button>
             </div>
           </div>
           <div id="fp-u" style="display:none;">
             <label class="dz" id="dz-firma-img">
-              <input type="file" accept=".png,.jpg,.jpeg" onchange="loadFImg(this)">
+              <input type="file" id="fi-firma-img" accept=".png,.jpg,.jpeg">
               <div class="dz-icon">🖼️</div>
               <div class="dz-title" id="fimg-txt">Subir imagen de firma</div>
               <div class="dz-sub">PNG o JPG — fondo blanco o transparente</div>
@@ -195,7 +178,6 @@
     </div>
   </div>
 
-  <!-- FASE 1 -->
   <div class="card">
     <div class="card-hdr">
       <div class="fase-num">1</div>
@@ -207,24 +189,19 @@
     <div class="card-body">
       <div class="g2" style="margin-bottom:12px;">
 
-        <!-- Módulo 1 — Informe -->
         <div class="mod" id="mod-inf">
           <div class="mod-title">📄 Informe de actividades</div>
           <label class="dz" id="dz-xl">
-            <input type="file" accept=".xlsx,.xls" onchange="setF(this,'xl')">
+            <input type="file" id="fi-xl" accept=".xlsx,.xls">
             <div class="dz-icon">📊</div>
             <div class="dz-title" id="xl-t">Adjunta el Excel del formato</div>
             <div class="dz-sub">.xlsx — cualquier mes</div>
           </label>
-          <div class="dz" id="dz-ev"
-            ondragover="event.preventDefault();this.classList.add('loaded')"
-            ondragleave="this.classList.remove('loaded')"
-            ondrop="dropEv(event)"
-            onclick="document.getElementById('fi-ev').click()">
-            <input type="file" id="fi-ev" multiple onchange="addEv(this.files)">
+          <div class="dz" id="dz-ev">
+            <input type="file" id="fi-ev" multiple>
             <div class="dz-icon">📁</div>
             <div class="dz-title" id="ev-t">Adjunta tus evidencias</div>
-            <div class="dz-sub">Arrastra o haz clic · varios archivos · CSV, fotos, actas, correos</div>
+            <div class="dz-sub">Arrastra o haz clic · varios archivos · fotos, PDFs, notas, CSV de correos</div>
             <div class="ev-chips" id="ev-chips"></div>
           </div>
           <div id="pg-inf" style="display:none;">
@@ -232,14 +209,13 @@
             <div class="prog-text" id="pt-inf">Procesando...</div>
           </div>
           <div id="r-inf"></div>
-          <button class="btn" id="b-inf" onclick="gen('informe')">⚡ Generar informe</button>
+          <button class="btn" id="b-inf" type="button">⚡ Generar informe</button>
         </div>
 
-        <!-- Módulo 2 — Cuenta -->
         <div class="mod" id="mod-cta">
           <div class="mod-title">🧾 Cuenta de cobro</div>
           <label class="dz" id="dz-dan">
-            <input type="file" accept=".pdf" onchange="setF(this,'dan')">
+            <input type="file" id="fi-dan" accept=".pdf">
             <div class="dz-icon">📄</div>
             <div class="dz-title" id="dan-t">Adjunta la cuenta de cobro</div>
             <div class="dz-sub">PDF descargado — 3 páginas</div>
@@ -256,23 +232,22 @@
             <div class="prog-text" id="pt-cta">Firmando...</div>
           </div>
           <div id="r-cta"></div>
-          <button class="btn" id="b-cta" onclick="gen('cuenta')">✍️ Firmar cuenta</button>
+          <button class="btn" id="b-cta" type="button">✍️ Firmar cuenta</button>
         </div>
 
       </div>
 
-      <!-- Módulo 3 — SS -->
       <div class="mod" id="mod-ss">
         <div class="mod-title">🏥 Seguridad social — se genera automáticamente al subir los dos archivos</div>
         <div class="g2">
           <label class="dz" id="dz-pla">
-            <input type="file" accept=".pdf" onchange="setF(this,'pla')">
+            <input type="file" id="fi-pla" accept=".pdf">
             <div class="dz-icon">📋</div>
             <div class="dz-title" id="pla-t">Adjunta la planilla SS</div>
             <div class="dz-sub">PDF de Enlace Operativo</div>
           </label>
           <label class="dz" id="dz-com">
-            <input type="file" accept=".pdf,.png,.jpg,.jpeg" onchange="setF(this,'com')">
+            <input type="file" id="fi-com" accept=".pdf,.png,.jpg,.jpeg">
             <div class="dz-icon">💳</div>
             <div class="dz-title" id="com-t">Adjunta el comprobante de pago</div>
             <div class="dz-sub">PDF, PNG o JPG</div>
@@ -288,7 +263,6 @@
     </div>
   </div>
 
-  <!-- FASE 2 -->
   <div class="card">
     <div class="card-hdr">
       <div class="fase-num warn">2</div>
@@ -306,7 +280,6 @@
     </div>
   </div>
 
-  <!-- FASE 3 -->
   <div class="card">
     <div class="card-hdr">
       <div class="fase-num info">3</div>
@@ -318,8 +291,8 @@
     <div class="card-body">
       <div class="g3" style="margin-bottom:12px;">
 
-        <div class="slot" id="es-cta" onclick="pickSlot('cta')">
-          <input type="file" accept=".pdf" id="ei-cta" onchange="setSlot(this,'cta')">
+        <div class="slot" id="es-cta">
+          <input type="file" accept=".pdf" id="ei-cta">
           <div class="slot-icon" id="si-cta">🧾</div>
           <div class="slot-title" id="st-cta">Cuenta + Declaración</div>
           <div class="slot-sub" id="ss-cta">PDF del módulo 2</div>
@@ -327,15 +300,15 @@
         </div>
 
         <label class="slot pending" id="es-vob">
-          <input type="file" accept=".pdf" onchange="setSlot(this,'vob')">
+          <input type="file" accept=".pdf" id="ei-vob">
           <div class="slot-icon">📥</div>
           <div class="slot-title" id="st-vob">Informe con VoBo</div>
           <div class="slot-sub">PDF del supervisor — subir aquí</div>
           <span class="slot-badge badge-warn">Subir aquí →</span>
         </label>
 
-        <div class="slot" id="es-ss" onclick="pickSlot('ss')">
-          <input type="file" accept=".pdf" id="ei-ss" onchange="setSlot(this,'ss')">
+        <div class="slot" id="es-ss">
+          <input type="file" accept=".pdf" id="ei-ss">
           <div class="slot-icon" id="si-ss">🏥</div>
           <div class="slot-title" id="st-ss">Planilla SS + Comprobante</div>
           <div class="slot-sub" id="ss-ss">PDF del módulo 3</div>
@@ -348,7 +321,7 @@
         <div class="prog-text" id="pt-emp">Empaquetando...</div>
       </div>
       <div id="r-emp"></div>
-      <button class="btn btn-info" id="b-emp" onclick="gen('empaquetar')">📦 Generar paquete final</button>
+      <button class="btn btn-info" id="b-emp" type="button">📦 Generar paquete final</button>
       <div style="font-size:10px;color:var(--t3);text-align:center;margin-top:8px;" id="emp-note">
         Completa los tres slots para poder empaquetar
       </div>
@@ -359,145 +332,297 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const API = window.location.hostname === 'localhost' ? 'http://localhost:5000' : '';
-const F = {};
+(function () {
+  'use strict';
 
-// ── FIRMA ──
-const fc = document.getElementById('fc'), ctx = fc.getContext('2d');
-let dr = false, lx = 0, ly = 0;
-const gp = e => { const r = fc.getBoundingClientRect(); return e.touches ? { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top } : { x: e.clientX - r.left, y: e.clientY - r.top }; };
-fc.addEventListener('mousedown', e => { dr = true; const p = gp(e); lx = p.x; ly = p.y; });
-fc.addEventListener('mousemove', e => { if (!dr) return; const p = gp(e); ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(p.x, p.y); ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#1a1917'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.stroke(); lx = p.x; ly = p.y; });
-fc.addEventListener('mouseup', () => dr = false);
-fc.addEventListener('mouseleave', () => dr = false);
+  var API = window.location.hostname === 'localhost' ? 'http://localhost:5000' : '';
+  var F = {};
 
-function setFTab(t) {
-  document.getElementById('fp-d').style.display = t === 'd' ? 'block' : 'none';
-  document.getElementById('fp-u').style.display = t === 'u' ? 'block' : 'none';
-  document.getElementById('ft-d').className = 'ftab' + (t === 'd' ? ' on' : '');
-  document.getElementById('ft-u').className = 'ftab' + (t === 'u' ? ' on' : '');
-}
-function clrF() { ctx.clearRect(0, 0, fc.width, fc.height); F.firma = null; document.getElementById('firma-ok').style.display = 'none'; }
-function savFD() {
-  const b = document.createElement('canvas'); b.width = fc.width; b.height = fc.height;
-  if (fc.toDataURL() === b.toDataURL()) { toast('Dibuja tu firma primero', 'err'); return; }
-  fc.toBlob(blob => { F.firma = blob; showFOk('Firma dibujada — lista para todos los módulos'); }, 'image/png');
-}
-function loadFImg(inp) {
-  if (!inp.files[0]) return;
-  F.firma = inp.files[0];
-  document.getElementById('fimg-txt').textContent = '✓ ' + inp.files[0].name.substring(0, 24);
-  document.getElementById('dz-firma-img').classList.add('loaded');
-  showFOk('Imagen adjuntada: ' + inp.files[0].name.substring(0, 20));
-}
-function showFOk(txt) { const el = document.getElementById('firma-ok'); el.style.display = 'block'; document.getElementById('firma-ok-txt').textContent = txt; }
+  // ── HEADER CÉDULA ──
+  var gCed = document.getElementById('g-ced');
+  var hdrCed = document.getElementById('hdr-ced');
+  gCed.addEventListener('input', function () {
+    hdrCed.textContent = gCed.value || 'Sin cédula';
+  });
 
-// ── ARCHIVOS ──
-function setF(inp, key) {
-  if (!inp.files.length) return;
-  F[key] = inp.files[0];
-  const dz = document.getElementById('dz-' + key);
-  const dt = document.getElementById(key + '-t');
-  if (dz) dz.classList.add('loaded');
-  if (dt) dt.textContent = '✓ ' + inp.files[0].name.substring(0, 26);
-  if ((key === 'pla' || key === 'com') && F.pla && F.com) gen('ss');
-}
+  // ── FIRMA: canvas dibujado ──
+  var fc = document.getElementById('fc');
+  var ctx = fc.getContext('2d');
+  var dr = false, lx = 0, ly = 0;
 
-function addEv(files) {
-  if (!files.length) return;
-  if (!F.ev) F.ev = [];
-  Array.from(files).forEach(f => F.ev.push(f));
-  document.getElementById('dz-ev').classList.add('loaded');
-  document.getElementById('ev-t').textContent = F.ev.length + ' archivo(s) adjuntado(s)';
-  const chips = document.getElementById('ev-chips');
-  chips.innerHTML = F.ev.slice(0, 5).map(f => `<span class="ev-chip">${f.name.substring(0, 16)}</span>`).join('');
-  if (F.ev.length > 5) chips.innerHTML += `<span class="ev-chip">+${F.ev.length - 5} más</span>`;
-}
-function dropEv(e) { e.preventDefault(); document.getElementById('dz-ev').classList.remove('loaded'); addEv(e.dataTransfer.files); }
+  function getPos(e) {
+    var r = fc.getBoundingClientRect();
+    if (e.touches && e.touches.length) {
+      return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top };
+    }
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+  fc.addEventListener('mousedown', function (e) { dr = true; var p = getPos(e); lx = p.x; ly = p.y; });
+  fc.addEventListener('mousemove', function (e) {
+    if (!dr) return;
+    var p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(lx, ly);
+    ctx.lineTo(p.x, p.y);
+    ctx.strokeStyle = '#1a1917';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    lx = p.x; ly = p.y;
+  });
+  fc.addEventListener('mouseup', function () { dr = false; });
+  fc.addEventListener('mouseleave', function () { dr = false; });
 
-// ── SLOTS FASE 3 ──
-function pickSlot(key) { document.getElementById('ei-' + key).click(); }
-function setSlot(inp, key) {
-  if (!inp.files[0]) return;
-  F['emp_' + key] = inp.files[0];
-  markSlot(key, inp.files[0].name, 'manual');
-  updEmpNote();
-}
-function markSlot(key, name, type) {
-  const slot = document.getElementById('es-' + key);
-  if (!slot) return;
-  slot.className = 'slot ok';
-  const si = document.getElementById('si-' + key);
-  const st = document.getElementById('st-' + key);
-  const ss = document.getElementById('ss-' + key);
-  if (si) si.textContent = '✅';
-  if (st) st.textContent = name.substring(0, 24);
-  if (ss) ss.textContent = type === 'auto' ? 'Generado en Fase 1' : 'Subido';
-  // Reemplazar badge
-  const badges = slot.querySelectorAll('.slot-badge');
-  badges.forEach(b => b.remove());
-  const badge = document.createElement('span');
-  badge.className = 'slot-badge badge-ok';
-  badge.textContent = type === 'auto' ? 'Generado en Fase 1' : 'Listo ✓';
-  slot.appendChild(badge);
-  updEmpNote();
-}
-function updEmpNote() {
-  const note = document.getElementById('emp-note');
-  const faltan = ['emp_cta', 'emp_vob', 'emp_ss'].filter(k => !F[k]);
-  if (faltan.length === 0) note.textContent = '✓ Todo listo — puedes generar el paquete final';
-  else if (faltan.length === 1 && faltan[0] === 'emp_vob') note.textContent = 'Solo falta el informe con VoBo del supervisor';
-  else note.textContent = 'Completa los tres slots para poder empaquetar';
-}
+  function clrFirma() {
+    ctx.clearRect(0, 0, fc.width, fc.height);
+    F.firma = null;
+    document.getElementById('firma-ok').style.display = 'none';
+  }
 
-// ── GENERAR ──
-async function gen(mod) {
-  const ced = document.getElementById('g-ced').value.trim();
-  const cob = document.getElementById('g-cob').value.trim();
-  if (!ced) { toast('Escribe tu cédula primero', 'err'); return; }
-  if (!cob) { toast('Escribe el número de cobro', 'err'); return; }
+  function saveFirmaDrawn() {
+    var blank = document.createElement('canvas');
+    blank.width = fc.width; blank.height = fc.height;
+    if (fc.toDataURL() === blank.toDataURL()) {
+      toast('Dibuja tu firma primero', 'err');
+      return;
+    }
+    fc.toBlob(function (blob) {
+      F.firma = blob;
+      showFirmaOk('Firma dibujada — lista para todos los módulos');
+    }, 'image/png');
+  }
 
-  const cfgs = {
-    informe: { ep: '/api/informe', check: () => F.firma && F.xl, msg: 'Necesitas el Excel y tu firma guardada', labels: ['Leyendo actividades...', 'Clasificando evidencias...', 'Redactando metas...', 'Generando PDF...'], name: `${ced}-Informe${cob}.pdf`, btn: 'b-inf', pg: 'pg-inf', fill: 'pf-inf', txt: 'pt-inf', res: 'r-inf', mod: 'mod-inf', slot: 'cta', slotKey: null },
-    cuenta: { ep: '/api/cuenta', check: () => F.firma && F.dan, msg: 'Necesitas el PDF de la cuenta y tu firma', labels: ['Procesando PDF...', 'Eliminando fondo firma...', 'Estampando firma...'], name: `${ced}-CuentaCobro${cob}.pdf`, btn: 'b-cta', pg: 'pg-cta', fill: 'pf-cta', txt: 'pt-cta', res: 'r-cta', mod: 'mod-cta', slot: 'cta' },
-    ss: { ep: '/api/ss', check: () => F.pla && F.com, msg: 'Necesitas la planilla y el comprobante', labels: ['Combinando archivos...'], name: `${ced}-SS${cob}.pdf`, btn: null, pg: 'pg-ss', fill: 'pf-ss', txt: 'pt-ss', res: 'r-ss', mod: 'mod-ss', slot: 'ss' },
-    empaquetar: { ep: '/api/empaquetar', check: () => F.emp_cta && F.emp_vob && F.emp_ss, msg: 'Faltan documentos en los slots', labels: ['Uniendo documentos...', 'Optimizando...', 'Generando paquete...'], name: `${ced}-CC${cob}.pdf`, btn: 'b-emp', pg: 'pg-emp', fill: 'pf-emp', txt: 'pt-emp', res: 'r-emp', mod: null, slot: null },
-  };
+  document.getElementById('btn-clear-firma').addEventListener('click', clrFirma);
+  document.getElementById('btn-save-firma').addEventListener('click', saveFirmaDrawn);
 
-  const c = cfgs[mod];
-  if (!c.check()) { toast(c.msg, 'err'); return; }
+  // ── FIRMA: tabs dibujar / adjuntar ──
+  var ftD = document.getElementById('ft-d');
+  var ftU = document.getElementById('ft-u');
+  var fpD = document.getElementById('fp-d');
+  var fpU = document.getElementById('fp-u');
 
-  const btn = c.btn ? document.getElementById(c.btn) : null;
-  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Procesando...'; }
-  document.getElementById(c.pg).style.display = 'block';
-  document.getElementById(c.res).innerHTML = '';
+  function setFirmaTab(which) {
+    fpD.style.display = which === 'd' ? 'block' : 'none';
+    fpU.style.display = which === 'u' ? 'block' : 'none';
+    ftD.className = 'ftab' + (which === 'd' ? ' on' : '');
+    ftU.className = 'ftab' + (which === 'u' ? ' on' : '');
+  }
+  ftD.addEventListener('click', function () { setFirmaTab('d'); });
+  ftU.addEventListener('click', function () { setFirmaTab('u'); });
 
-  let pct = 10, li = 0;
-  document.getElementById(c.txt).textContent = c.labels[0];
-  const iv = setInterval(() => {
-    pct = Math.min(pct + 18, 88);
-    document.getElementById(c.fill).style.width = pct + '%';
-    if (li < c.labels.length - 1 && pct > (li + 1) * (80 / c.labels.length)) { li++; document.getElementById(c.txt).textContent = c.labels[li]; }
-  }, 700);
+  document.getElementById('fi-firma-img').addEventListener('change', function () {
+    if (!this.files[0]) return;
+    F.firma = this.files[0];
+    document.getElementById('fimg-txt').textContent = '✓ ' + this.files[0].name.substring(0, 24);
+    document.getElementById('dz-firma-img').classList.add('loaded');
+    showFirmaOk('Imagen adjuntada: ' + this.files[0].name.substring(0, 20));
+  });
 
-  try {
-    const fd = new FormData();
+  function showFirmaOk(txt) {
+    var el = document.getElementById('firma-ok');
+    el.style.display = 'block';
+    document.getElementById('firma-ok-txt').textContent = txt;
+  }
+
+  // ── ARCHIVOS SIMPLES (excel, daniel, planilla, comprobante) ──
+  function bindSimpleFile(inputId, dzId, labelId, key, onDone) {
+    var input = document.getElementById(inputId);
+    input.addEventListener('change', function () {
+      if (!input.files.length) return;
+      F[key] = input.files[0];
+      document.getElementById(dzId).classList.add('loaded');
+      document.getElementById(labelId).textContent = '✓ ' + input.files[0].name.substring(0, 26);
+      if (onDone) onDone();
+    });
+  }
+
+  bindSimpleFile('fi-xl', 'dz-xl', 'xl-t', 'xl');
+  bindSimpleFile('fi-dan', 'dz-dan', 'dan-t', 'dan');
+  bindSimpleFile('fi-pla', 'dz-pla', 'pla-t', 'pla', checkSS);
+  bindSimpleFile('fi-com', 'dz-com', 'com-t', 'com', checkSS);
+
+  function checkSS() {
+    if (F.pla && F.com) gen('ss');
+  }
+
+  // ── EVIDENCIAS: acumulables, varios archivos ──
+  var dzEv = document.getElementById('dz-ev');
+  var fiEv = document.getElementById('fi-ev');
+
+  function addEvidencias(fileList) {
+    if (!fileList || !fileList.length) return;
+    if (!F.ev) F.ev = [];
+    for (var i = 0; i < fileList.length; i++) F.ev.push(fileList[i]);
+    dzEv.classList.add('loaded');
+    document.getElementById('ev-t').textContent = F.ev.length + ' archivo(s) adjuntado(s)';
+    var chips = document.getElementById('ev-chips');
+    var html = '';
+    var max = Math.min(F.ev.length, 5);
+    for (var j = 0; j < max; j++) {
+      html += '<span class="ev-chip">' + F.ev[j].name.substring(0, 16) + '</span>';
+    }
+    if (F.ev.length > 5) html += '<span class="ev-chip">+' + (F.ev.length - 5) + ' más</span>';
+    chips.innerHTML = html;
+  }
+
+  fiEv.addEventListener('change', function () { addEvidencias(this.files); });
+  dzEv.addEventListener('click', function (e) {
+    if (e.target === fiEv) return;
+    fiEv.click();
+  });
+  dzEv.addEventListener('dragover', function (e) { e.preventDefault(); dzEv.classList.add('loaded'); });
+  dzEv.addEventListener('dragleave', function () { dzEv.classList.remove('loaded'); });
+  dzEv.addEventListener('drop', function (e) {
+    e.preventDefault();
+    addEvidencias(e.dataTransfer.files);
+  });
+
+  // ── SLOTS FASE 3 ──
+  function bindSlot(slotId, inputId, key, clickable) {
+    var slot = document.getElementById(slotId);
+    var input = document.getElementById(inputId);
+    if (clickable) {
+      slot.addEventListener('click', function () { input.click(); });
+    }
+    input.addEventListener('change', function () {
+      if (!input.files[0]) return;
+      F[key] = input.files[0];
+      markSlot(slotId, input.files[0].name, clickable ? 'auto' : 'manual');
+    });
+  }
+  bindSlot('es-cta', 'ei-cta', 'emp_cta', true);
+  bindSlot('es-vob', 'ei-vob', 'emp_vob', false);
+  bindSlot('es-ss', 'ei-ss', 'emp_ss', true);
+
+  function markSlot(slotId, name, type) {
+    var slot = document.getElementById(slotId);
+    slot.className = 'slot ok';
+    var icon = slot.querySelector('.slot-icon');
+    var title = slot.querySelector('.slot-title');
+    var sub = slot.querySelector('.slot-sub');
+    if (icon) icon.textContent = '✅';
+    if (title) title.textContent = name.substring(0, 24);
+    if (sub) sub.textContent = type === 'auto' ? 'Generado en Fase 1' : 'Subido';
+    var oldBadge = slot.querySelector('.slot-badge');
+    if (oldBadge) oldBadge.remove();
+    var badge = document.createElement('span');
+    badge.className = 'slot-badge badge-ok';
+    badge.textContent = type === 'auto' ? 'Generado en Fase 1' : 'Listo ✓';
+    slot.appendChild(badge);
+    updEmpNote();
+  }
+
+  function updEmpNote() {
+    var note = document.getElementById('emp-note');
+    var faltan = [];
+    if (!F.emp_cta) faltan.push('cta');
+    if (!F.emp_vob) faltan.push('vob');
+    if (!F.emp_ss) faltan.push('ss');
+    if (faltan.length === 0) note.textContent = '✓ Todo listo — puedes generar el paquete final';
+    else if (faltan.length === 1 && faltan[0] === 'vob') note.textContent = 'Solo falta el informe con VoBo del supervisor';
+    else note.textContent = 'Completa los tres slots para poder empaquetar';
+  }
+
+  // ── BOTONES GENERAR ──
+  document.getElementById('b-inf').addEventListener('click', function () { gen('informe'); });
+  document.getElementById('b-cta').addEventListener('click', function () { gen('cuenta'); });
+  document.getElementById('b-emp').addEventListener('click', function () { gen('empaquetar'); });
+
+  function getCfgs(ced, cob) {
+    return {
+      informe: {
+        ep: '/api/informe',
+        check: function () { return F.firma && F.xl; },
+        msg: 'Necesitas el Excel y tu firma guardada',
+        labels: ['Leyendo actividades...', 'Analizando evidencias...', 'Redactando metas...', 'Generando PDF...'],
+        name: ced + '-Informe' + cob + '.pdf',
+        btn: 'b-inf', pg: 'pg-inf', fill: 'pf-inf', txt: 'pt-inf', res: 'r-inf', mod: 'mod-inf', slot: null
+      },
+      cuenta: {
+        ep: '/api/cuenta',
+        check: function () { return F.firma && F.dan; },
+        msg: 'Necesitas el PDF de la cuenta y tu firma',
+        labels: ['Procesando PDF...', 'Eliminando fondo firma...', 'Estampando firma...'],
+        name: ced + '-CuentaCobro' + cob + '.pdf',
+        btn: 'b-cta', pg: 'pg-cta', fill: 'pf-cta', txt: 'pt-cta', res: 'r-cta', mod: 'mod-cta', slot: 'cta'
+      },
+      ss: {
+        ep: '/api/ss',
+        check: function () { return F.pla && F.com; },
+        msg: 'Necesitas la planilla y el comprobante',
+        labels: ['Combinando archivos...'],
+        name: ced + '-SS' + cob + '.pdf',
+        btn: null, pg: 'pg-ss', fill: 'pf-ss', txt: 'pt-ss', res: 'r-ss', mod: 'mod-ss', slot: 'ss'
+      },
+      empaquetar: {
+        ep: '/api/empaquetar',
+        check: function () { return F.emp_cta && F.emp_vob && F.emp_ss; },
+        msg: 'Faltan documentos en los slots',
+        labels: ['Uniendo documentos...', 'Optimizando...', 'Generando paquete...'],
+        name: ced + '-CC' + cob + '.pdf',
+        btn: 'b-emp', pg: 'pg-emp', fill: 'pf-emp', txt: 'pt-emp', res: 'r-emp', mod: null, slot: null
+      }
+    };
+  }
+
+  function gen(mod) {
+    var ced = gCed.value.trim();
+    var cob = document.getElementById('g-cob').value.trim();
+    if (!ced) { toast('Escribe tu cédula primero', 'err'); return; }
+    if (!cob) { toast('Escribe el número de cobro', 'err'); return; }
+
+    var cfgs = getCfgs(ced, cob);
+    var c = cfgs[mod];
+    if (!c.check()) { toast(c.msg, 'err'); return; }
+
+    var btn = c.btn ? document.getElementById(c.btn) : null;
+    if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Procesando...'; }
+    document.getElementById(c.pg).style.display = 'block';
+    document.getElementById(c.res).innerHTML = '';
+
+    var pct = 10, li = 0;
+    var fillEl = document.getElementById(c.fill);
+    var txtEl = document.getElementById(c.txt);
+    txtEl.textContent = c.labels[0];
+    var iv = setInterval(function () {
+      pct = Math.min(pct + 12, 88);
+      fillEl.style.width = pct + '%';
+      if (li < c.labels.length - 1 && pct > (li + 1) * (80 / c.labels.length)) {
+        li++; txtEl.textContent = c.labels[li];
+      }
+    }, 1200);
+
+    var fd = new FormData();
     fd.append('cedula', ced);
     fd.append('cobro', cob);
     if (F.firma) fd.append('firma', F.firma, 'firma.png');
-     if (mod === 'informe') {
+
+    if (mod === 'informe') {
       fd.append('excel', F.xl);
       if (F.ev) {
-        const csv = F.ev.find(f => f.name.toLowerCase().endsWith('.csv'));
+        var csv = null;
+        var sueltos = [];
+        for (var i = 0; i < F.ev.length; i++) {
+          var f = F.ev[i];
+          if (!csv && f.name.toLowerCase().indexOf('.csv') === f.name.length - 4) {
+            csv = f;
+          } else {
+            sueltos.push(f);
+          }
+        }
         if (csv) fd.append('csv', csv);
-        const sueltos = F.ev.filter(f => !f.name.toLowerCase().endsWith('.csv'));
-        sueltos.slice(0, 10).forEach((f, i) => fd.append('evidencia_' + i, f));
+        var max = Math.min(sueltos.length, 10);
+        for (var k = 0; k < max; k++) {
+          fd.append('evidencia_' + k, sueltos[k]);
+        }
+      }
     } else if (mod === 'cuenta') {
       fd.append('pdf', F.dan);
       fd.append('version', document.getElementById('decl-v').value);
     } else if (mod === 'ss') {
       fd.append('planilla', F.pla);
-      const ext = F.com.name.split('.').pop().toLowerCase();
+      var extParts = F.com.name.split('.');
+      var ext = extParts[extParts.length - 1].toLowerCase();
       fd.append('comprobante', F.com, 'comprobante.' + ext);
     } else if (mod === 'empaquetar') {
       fd.append('cuenta', F.emp_cta);
@@ -505,51 +630,48 @@ async function gen(mod) {
       fd.append('ss', F.emp_ss);
     }
 
-    const resp = await fetch(API + c.ep, { method: 'POST', body: fd });
-    clearInterval(iv);
-    if (!resp.ok) { const e = await resp.json(); throw new Error(e.error || 'Error del servidor'); }
+    fetch(API + c.ep, { method: 'POST', body: fd })
+      .then(function (resp) {
+        clearInterval(iv);
+        if (!resp.ok) {
+          return resp.json().then(function (e) { throw new Error(e.error || 'Error del servidor'); });
+        }
+        fillEl.style.width = '100%';
+        txtEl.textContent = '✓ Listo';
+        return resp.blob();
+      })
+      .then(function (blob) {
+        var url = URL.createObjectURL(blob);
+        document.getElementById(c.res).innerHTML =
+          '<div class="result"><span>📄</span><span class="result-name">' + c.name +
+          '</span><a href="' + url + '" download="' + c.name + '" class="result-dl">⬇ Descargar</a></div>';
 
-    document.getElementById(c.fill).style.width = '100%';
-    document.getElementById(c.txt).textContent = '✓ Listo';
-
-    const blob = await resp.blob();
-    const url = URL.createObjectURL(blob);
-
-    document.getElementById(c.res).innerHTML = `<div class="result"><span>📄</span><span class="result-name">${c.name}</span><a href="${url}" download="${c.name}" class="result-dl">⬇ Descargar</a></div>`;
-
-    if (c.mod) document.getElementById(c.mod).classList.add('done');
-    if (c.slot) { F['emp_' + c.slot] = new File([blob], c.name, { type: 'application/pdf' }); markSlot(c.slot, c.name, 'auto'); }
-    if (btn) btn.innerHTML = '✓ Listo';
-    toast('¡Listo! ' + c.name, 'ok');
-
-  } catch (e) {
-    clearInterval(iv);
-    document.getElementById(c.fill).style.width = '0%';
-    document.getElementById(c.txt).textContent = 'Error — intenta de nuevo';
-    if (btn) { btn.disabled = false; btn.innerHTML = mod === 'empaquetar' ? '📦 Reintentar' : '⚡ Reintentar'; }
-    toast('Error: ' + e.message, 'err');
-    console.error(e);
+        if (c.mod) document.getElementById(c.mod).classList.add('done');
+        if (c.slot) {
+          F['emp_' + c.slot] = new File([blob], c.name, { type: 'application/pdf' });
+          markSlot('es-' + c.slot, c.name, 'auto');
+        }
+        if (btn) btn.innerHTML = '✓ Listo';
+        toast('¡Listo! ' + c.name, 'ok');
+      })
+      .catch(function (e) {
+        clearInterval(iv);
+        fillEl.style.width = '0%';
+        txtEl.textContent = 'Error — intenta de nuevo';
+        if (btn) { btn.disabled = false; btn.innerHTML = mod === 'empaquetar' ? '📦 Reintentar' : '⚡ Reintentar'; }
+        toast('Error: ' + e.message, 'err');
+        console.error(e);
+      });
   }
-}
 
-function toast(msg, type = '') { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast show' + (type ? ' ' + type : ''); setTimeout(() => t.className = 'toast', 3500); }
-
-// Marcar slot VoBo cuando se sube manualmente
-document.querySelector('#es-vob input').addEventListener('change', function() {
-  if (this.files[0]) {
-    F.emp_vob = this.files[0];
-    const slot = document.getElementById('es-vob');
-    slot.className = 'slot ok';
-    document.getElementById('st-vob').textContent = this.files[0].name.substring(0, 24);
-    const badges = slot.querySelectorAll('.slot-badge');
-    badges.forEach(b => b.remove());
-    const badge = document.createElement('span');
-    badge.className = 'slot-badge badge-ok';
-    badge.textContent = 'Listo ✓';
-    slot.appendChild(badge);
-    updEmpNote();
+  function toast(msg, type) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type ? ' ' + type : '');
+    setTimeout(function () { t.className = 'toast'; }, 3500);
   }
-});
+
+})();
 </script>
 </body>
 </html>
