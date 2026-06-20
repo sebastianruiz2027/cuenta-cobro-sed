@@ -260,10 +260,16 @@ def redactar_metas(clasificados: list[list[str]],
             'max_tokens': 150 * n_acts,
             'messages': [{'role': 'user', 'content': prompt}]
         }).encode('utf-8')
+        import os as _os
+        api_key = _os.environ.get('ANTHROPIC_API_KEY', '')
         req = urllib.request.Request(
             'https://api.anthropic.com/v1/messages',
             data=data,
-            headers={'Content-Type': 'application/json'},
+            headers={
+                'Content-Type': 'application/json',
+                'x-api-key': api_key,
+                'anthropic-version': '2023-06-01'
+            },
             method='POST'
         )
         with urllib.request.urlopen(req, timeout=30) as resp:
@@ -388,12 +394,12 @@ def estampar_firma(pdf_src: str, firma_img: str,
     firma_path = Path(firma_img) if firma_img else None
 
     if firma_path and firma_path.exists():
-        # Imagen real de la firma dibujada por el contratista
-        firma_w, firma_h = 160, 50
-        firma_x = 55
-        # Campo "Firma Contratista" label en y=517 desde arriba
-        # Imagen va encima de la línea de firma (~10pt antes del label)
-        firma_y = page_h - 513  # desde abajo en ReportLab
+        # Coordenadas exactas medidas del PDF real (595x841pt):
+        # Línea firma en y=515.6 desde arriba
+        # Espacio libre: y=479.9 → y=515.6 = 35.7pt
+        firma_w, firma_h = 165, 32
+        firma_x = 42
+        firma_y = page_h - 515.6  # base sobre la línea de firma
         c.drawImage(
             str(firma_path), firma_x, firma_y,
             width=firma_w, height=firma_h,
