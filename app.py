@@ -28,37 +28,47 @@ def health():
 def api_informe():
     try:
         cedula = int(request.form.get('cedula') or 0)
-        cobro  = int(request.form.get('cobro', 1))
+        cobro  = int(request.form.get('cobro') or 1)
+        if not cedula:
+            return jsonify({'error': 'La cédula es requerida'}), 400
 
         with tempfile.TemporaryDirectory() as tmp:
-            # Guardar archivos
             excel_path = os.path.join(tmp, 'formato.xlsx')
             firma_path = os.path.join(tmp, 'firma.png')
             request.files['excel'].save(excel_path)
             request.files['firma'].save(firma_path)
 
-            csv_path = None
-            if 'csv' in request.files:
+            csv_path = ''
+            if 'csv' in request.files and request.files['csv'].filename:
                 csv_path = os.path.join(tmp, 'evidencias.csv')
                 request.files['csv'].save(csv_path)
 
-            # Generar informe
+            # Archivos sueltos de evidencia (fotos, PDFs, notas, actas...)
+            archivos_evidencia = []
+            for key in request.files:
+                if key.startswith('evidencia_'):
+                    f = request.files[key]
+                    if f.filename:
+                        ext = os.path.splitext(f.filename)[1] or '.bin'
+                        path = os.path.join(tmp, f'{key}{ext}')
+                        f.save(path)
+                        archivos_evidencia.append(path)
+
             pdf_out = os.path.join(tmp, f'{cedula}-Informe{cobro}.pdf')
             generar_informe(
                 excel_src=excel_path,
-                csv_evidencias=csv_path or '',
-                firma_img=firma_path,
                 cedula=cedula,
                 cobro=cobro,
+                csv_evidencias=csv_path,
+                archivos_evidencia=archivos_evidencia,
+                firma_img=firma_path,
                 output_pdf=pdf_out,
                 workdir=tmp,
             )
 
             return send_file(
-                pdf_out,
-                mimetype='application/pdf',
-                as_attachment=True,
-                download_name=f'{cedula}-Informe{cobro}.pdf'
+                pdf_out, mimetype='application/pdf',
+                as_attachment=True, download_name=f'{cedula}-Informe{cobro}.pdf'
             )
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -72,7 +82,7 @@ def api_cuenta():
         cobro   = request.form.get('cobro', '1')
         if not cedula:
             return jsonify({'error': 'La cédula es requerida'}), 400
-        version = request.form.get('version', 'valores')  # 'valores' o 'ceros'
+        version = request.form.get('version', 'valores')
 
         with tempfile.TemporaryDirectory() as tmp:
             pdf_path   = os.path.join(tmp, 'daniel.pdf')
@@ -84,10 +94,8 @@ def api_cuenta():
             procesar_cuenta_cobro(pdf_path, firma_path, version, pdf_out)
 
             return send_file(
-                pdf_out,
-                mimetype='application/pdf',
-                as_attachment=True,
-                download_name=f'{cedula}-CuentaCobro{cobro}.pdf'
+                pdf_out, mimetype='application/pdf',
+                as_attachment=True, download_name=f'{cedula}-CuentaCobro{cobro}.pdf'
             )
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -103,12 +111,10 @@ def api_ss():
             return jsonify({'error': 'La cédula es requerida'}), 400
 
         with tempfile.TemporaryDirectory() as tmp:
-            planilla_path     = os.path.join(tmp, 'planilla.pdf')
-            comprobante_path  = os.path.join(tmp, 'comprobante')
+            planilla_path    = os.path.join(tmp, 'planilla.pdf')
+            comprobante_path = os.path.join(tmp, 'comprobante')
 
             request.files['planilla'].save(planilla_path)
-
-            # Comprobante puede ser PDF, JPG, PNG
             comp_file = request.files['comprobante']
             ext = os.path.splitext(comp_file.filename)[1].lower() or '.pdf'
             comprobante_path += ext
@@ -118,10 +124,8 @@ def api_ss():
             combinar_ss(planilla_path, comprobante_path, pdf_out)
 
             return send_file(
-                pdf_out,
-                mimetype='application/pdf',
-                as_attachment=True,
-                download_name=f'{cedula}-SS{cobro}.pdf'
+                pdf_out, mimetype='application/pdf',
+                as_attachment=True, download_name=f'{cedula}-SS{cobro}.pdf'
             )
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -132,7 +136,9 @@ def api_ss():
 def api_empaquetar():
     try:
         cedula = int(request.form.get('cedula') or 0)
-        cobro  = int(request.form.get('cobro', 1))
+        cobro  = int(request.form.get('cobro') or 1)
+        if not cedula:
+            return jsonify({'error': 'La cédula es requerida'}), 400
 
         with tempfile.TemporaryDirectory() as tmp:
             cuenta_path  = os.path.join(tmp, 'cuenta.pdf')
@@ -145,23 +151,21 @@ def api_empaquetar():
 
             pdf_out = os.path.join(tmp, f'{cedula}-CC{cobro}.pdf')
             empaquetar(
-                cuenta_pdf=cuenta_path,
-                informe_pdf=informe_path,
-                ss_pdf=ss_path,
-                cedula=cedula,
-                cobro=cobro,
-                output=pdf_out
+                cuenta_pdf=cuenta_path, informe_pdf=informe_path, ss_pdf=ss_path,
+                cedula=cedula, cobro=cobro, output=pdf_out
             )
 
             return send_file(
-                pdf_out,
-                mimetype='application/pdf',
-                as_attachment=True,
-                download_name=f'{cedula}-CC{cobro}.pdf'
+                pdf_out, mimetype='application/pdf',
+                as_attachment=True, download_name=f'{cedula}-CC{cobro}.pdf'
             )
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
