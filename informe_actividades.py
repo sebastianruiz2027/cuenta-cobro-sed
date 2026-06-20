@@ -141,6 +141,7 @@ def preparar_archivos_evidencia(rutas: list[str]) -> list[dict]:
     Prepara hasta MAX_ARCHIVOS_EVIDENCIA archivos (fotos, PDFs, notas
     escaneadas, capturas, actas escritas a mano) como bloques base64
     listos para mandar a la API de Anthropic con visión.
+    Las imágenes se redimensionan para que la llamada sea más rápida.
     """
     bloques = []
     for ruta in (rutas or [])[:MAX_ARCHIVOS_EVIDENCIA]:
@@ -152,20 +153,36 @@ def preparar_archivos_evidencia(rutas: list[str]) -> list[dict]:
             continue
 
         try:
-            data = p.read_bytes()
-            b64 = base64.b64encode(data).decode('utf-8')
-
             if mime in ('image/jpeg', 'image/png', 'image/gif', 'image/webp'):
+                # Redimensionar para que la llamada a la API sea rápida
+                from PIL import Image
+                img = Image.open(p)
+                if img.mode in ('RGBA', 'P'):
+                    img = img.convert('RGB')
+                # Máximo 1024px en el lado más largo (suficiente para leer texto)
+                max_side = 1024
+                if max(img.size) > max_side:
+                    ratio = max_side / max(img.size)
+                    new_size = (int(img.size[0]*ratio), int(img.size[1]*ratio))
+                    img = img.resize(new_size, Image.LANCZOS)
+                buf_img = io.BytesIO()
+                img.save(buf_img, format='JPEG', quality=80)
+                b64 = base64.b64encode(buf_img.getvalue()).decode('utf-8')
                 bloques.append({
                     'type': 'image',
-                    'source': {'type': 'base64', 'media_type': mime, 'data': b64}
+                    'source': {'type': 'base64', 'media_type': 'image/jpeg', 'data': b64}
                 })
             elif mime == 'application/pdf':
+                data = p.read_bytes()
+                # Límite de tamaño para PDFs (5MB) — evita llamadas eternas
+                if len(data) > 5 * 1024 * 1024:
+                    print(f'  ⚠ {p.name} muy pesado (>5MB), se omite')
+                    continue
+                b64 = base64.b64encode(data).decode('utf-8')
                 bloques.append({
                     'type': 'document',
                     'source': {'type': 'base64', 'media_type': 'application/pdf', 'data': b64}
                 })
-            # otros formatos se ignoran silenciosamente (no soportados por visión)
         except Exception as e:
             print(f'  ⚠ No se pudo procesar {p.name}: {e}')
     return bloques
@@ -387,7 +404,17 @@ def generar_informe(
     firma_img: str = '',
     output_pdf: str = '',
     workdir: str = '/tmp',
+    progress_cb=None,
 ) -> str:
+    """progress_cb: función opcional(str) para reportar progreso en vivo"""
+    def report(msg):
+        print(msg)
+        if progress_cb:
+            try:
+                progress_cb(msg)
+            except Exception:
+                pass
+
     """
     Genera el 'Informe de actividades terminado y firmado'.
 
@@ -412,29 +439,29 @@ def generar_informe(
     print(f'  INFORME DE ACTIVIDADES — Cédula {cedula} · Cobro #{cobro}')
     print(f'{"═"*60}')
 
-    print('\n[1/5] Leyendo datos del contratista desde CONSOLIDADO...')
+    report('Leyendo datos del contratista...')
     datos = leer_contratista(excel_src, cedula)
     print(f'  Contratista: {datos["nombre"]}')
     print(f'  Contrato:    {datos["contrato"]}')
     print(f'  Actividades: {datos["num_actividades"]}')
 
-    print(f'\n[2/5] Preparando evidencias...')
+    report('Preparando evidencias...')
     asuntos = leer_evidencias_csv(csv_evidencias)
     print(f'  Correos (complemento): {len(asuntos)}')
     bloques = preparar_archivos_evidencia(archivos_evidencia)
     print(f'  Archivos de evidencia: {len(bloques)} de {len(archivos_evidencia)} subidos '
           f'(máx {MAX_ARCHIVOS_EVIDENCIA})')
 
-    print('\n[3/5] Redactando metas con IA (lectura de evidencias)...')
+    report('Analizando evidencias y redactando metas con IA...')
     metas = redactar_metas(datos['actividades'], asuntos, bloques)
 
-    print('\n[4/5] Llenando Excel...')
+    report('Llenando formato Excel...')
     excel_tmp = str(Path(workdir) / f'{cedula}_Informe{cobro}_tmp.xlsx')
     llenar_excel(excel_src, cedula, cobro, metas, excel_tmp)
 
     pdf_tmp = excel_a_pdf(excel_tmp, workdir)
 
-    print('\n[5/5] Estampando firma...')
+    report('Convirtiendo a PDF y estampando firma...')
     estampar_firma(pdf_tmp, firma_img, output_pdf, cedula, datos['nombre'])
 
     print(f'\n{"═"*60}')
